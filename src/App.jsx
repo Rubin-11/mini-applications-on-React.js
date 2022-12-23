@@ -1,26 +1,29 @@
-import { useState } from 'react';
-import './index.scss';
+import { useState } from "react";
+import "./index.scss";
+import { Modal } from "./Modal";
 
 function App() {
-
-const [count, setCount] = useState(0);
-
-const onClickPluse = () => {
-    setCount((count) => count + 1)
-}
-
-const onClickMinus = () => {
-    setCount((count) => count - 1)
-}
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="App">
-      <div>
-        <h2>Счетчик</h2>
-        <h1>{count}</h1>
-        <button className="minus" onClick={onClickMinus}>- Минус</button>
-        <button className="plus" onClick={onClickPluse}>Плюс +</button>
-      </div>
+      <button className="open-modal-btn" onClick={() => setOpen(true)}>
+        ✨ Открыть окно
+      </button>
+      <Modal open={open} setOpen={setOpen}>
+        <img alt="gif" src="https://media2.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif" />
+      </Modal>
+      {/* {open && (
+        <div className="overlay animated">
+          <div className="modal">
+            <svg onClick={() => setOpen(false)} height="200" viewBox="0 0 200 200" width="200">
+              <title />
+              <path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" />
+            </svg>
+            <img alt="gif" src="https://media2.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif" />
+          </div>
+        </div>
+      )} */}
     </div>
   );
 }
