@@ -1,31 +1,63 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.scss";
-import { Game } from "./Game";
-import { Result } from "./Result";
-import { QUESTIONS } from "./constants";
+import { Success } from "./components/Success";
+import { Users } from "./components/Users";
 
+// Тут список пользователей: https://reqres.in/api/users
 
 const App = () => {
-  const [step, setStep] = useState(0);
-  const [correct, setCorrect] = useState(0);
-  const question = QUESTIONS[step];
+  const [users, setUsers] = useState([]);
+  const [invites, setInvites] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  const [saccess, setSaccess] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
-  const onClickVariant = (index) => {
-    setStep(step + 1);
-    if (index === question.correct) {
-      setCorrect(correct + 1);
+  useEffect(() => {
+    fetch("https://reqres.in/api/users")
+      .then((res) => res.json())
+      .then((json) => {
+        setUsers(json.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Ошибка при получении пользователей");
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const onChengeSearchValue = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const onClickInvite = (id) => {
+    if (invites.includes(id)) {
+      setInvites((pre) => pre.filter((_id) => _id !== id));
+    } else {
+      setInvites((prev) => [...prev, id]);
     }
   };
 
-  const percentage = Math.round((step / QUESTIONS.length) * 100);
+  const onClickSendInvites = () => {
+    setSaccess(true);
+  }
 
   return (
     <div className="App">
-      {step !== QUESTIONS.length ? (
-        <Game percentage={percentage} question={question} onClickVariant={onClickVariant} />
+      {saccess ? (
+        <Success count={invites.length}/>
       ) : (
-        <Result correct={correct} questions={QUESTIONS} />
+        <Users
+          onChengeSearchValue={onChengeSearchValue}
+          searchValue={searchValue}
+          items={users}
+          isLoading={isLoading}
+          invites={invites}
+          onClickInvite={onClickInvite}
+          onClickSendInvites={onClickSendInvites}
+        />
       )}
+
+      {/* <Success /> */}
     </div>
   );
 };
